@@ -1,0 +1,30 @@
+I've built the workbook for obudanersen (ION582, Ionis) in Angelman syndrome across Germany, France, Italy, Spain and the UK. It has all seven tabs the template asks for and is saved as EU4+UK_AS_KOL_and_treatment_centres_-_UPDATED_2026-10-14_Cowork.Auto.High.xlsx. It maps 95 centres and 97 KOLs. Every country has at least 15 KOLs, and no Tier 4 centres are listed because you didn't ask for them.
+
+**One limit to know first:** live PubMed searches weren't possible during this run, so the 2021–2026 publication searches were partial. Publication scores were kept low where evidence was missing. As a result, **no KOL reaches Tier 1**; the highest score is 22/30. Re-run the PubMed author searches before you finalise KOL tiers.
+
+| Country | Centres T1 / T2 / T3 | KOLs T2 / T3 |
+|---|---|---|
+| Germany | 3 / 4 / 10 | 8 / 12 |
+| France | 3 / 4 / 10 | 6 / 13 |
+| Italy | 1 / 11 / 16 | 8 / 15 |
+| Spain | 0 / 5 / 12 | 6 / 12 |
+| UK | 1 / 4 / 11 | 5 / 12 |
+| **Total** | **8 / 28 / 59** | **33 / 64** |
+
+**Things to decide before outreach:**
+- **Competitor setback:** Ultragenyx's apazunersen works the same way as obudanersen and missed its Phase 3 primary endpoint on 2 Sep 2026. That is a risk for the whole drug class. It also leaves its trial sites (Hamburg, Leipzig, LMU Munich, Parc Taulí, Necker and Marseille) experienced with spinal-injection dosing and potentially open to REVEAL's adult cohort or CHAMPION.
+- **Investigator names aren't public:** no public trial registry names site leads for REVEAL or the other trials. The likely leads (for example Makowski at LMU Munich and Roche Martínez at Parc Taulí) are marked to verify. The Italian trial leads come from a single hospital press release.
+- **Tier 1 centres in Germany, France and the UK:** some only qualify on a loose reading of the template's criteria. Examples are national substitutes for the European Reference Networks in Germany, and counting national trial coordination as registry coordination at Necker and Marseille. All of these are flagged.
+- **Spain has no Tier 1 centre:** I found no Spanish guideline authors. Parc Taulí and Puerta de Hierro are noted as national anchors but stay at Tier 2.
+- **UK:** only 8 of the 17 UK KOLs are doctors; the rest are psychologists, researchers or allied health staff. Manchester was moved to Tier 2 because I couldn't find any recent Angelman papers from there.
+- **Industry links:** several KOLs work on both Ionis and competitor trials (for example D'Arrigo, Bahi-Buisson and Servais). Check their industry-payment disclosures before inviting them to an advisory board.
+
+**Corrections to earlier assumptions about the trials:**
+- REVEAL now shows as fully enrolled with 156 participants, not still recruiting adults.
+- CHAMPION is registered (NCT07782827) but has US sites only.
+- Rugonersen has moved from Roche to Oak Hill Bio and is in a Phase 3 trial, BEACON.
+- Obudanersen does not have the EU's PRIME fast-track status; that belongs to apazunersen.
+
+The checking tab lists 92 items: 27 confirmed and 65 left for your decision. The affected cells are highlighted in red on their tabs and nothing was changed. Two template points weren't fully met:
+- **Counts and filters:** the tier counts don't update when you apply filters.
+- **Row heights:** they were estimated rather than checked visually, so check that no text is cut off.
