@@ -1,0 +1,20 @@
+Subject: Medical Affairs agents: next steps after Monday's discussion
+
+Hi both,
+
+Thanks for Monday. Building on the decisions in the notes (Medical Affairs keep ownership of the prompts, we decompose the large prompts into specialised sub-agents, and we demonstrate a web application proof of concept), here's how I propose we move forward.
+
+It's worth keeping in view how we got here. Medical Affairs have been on a journey with these prompts: seeing what AI can actually do, and through each iteration working out what they really need. Their requirements have come out gradually through use, and that is still happening, particularly for KOL and conference mapping.
+
+The vision you outlined, finding new assets and filings automatically and triaging them with these prompts, is a great destination. It depends on prompts whose outputs Medical Affairs already trust. So I'd suggest three parallel tracks:
+
+1. BD and prevalence: into production now, as they run today. Pedro has signed off the BD prompt, and both produce accurate, consistent results in about 15 minutes in Copilot. Rather than rebuilding them (trimming the prompts has already cost fidelity), we put the approved prompts and templates under version control in a Teams/SharePoint space Medical Affairs owns, and they run them in Copilot as now. No build needed, and the business gets value immediately.
+
+2. KOL and conference mapping: decompose into sub-agents with Foundry as the back end. These have outgrown a single prompt. I'll work with you to scope a small pilot (one asset, one country), including validating Foundry's web research and direct access to PubMed's official API.
+
+3. Web application proof of concept: go ahead with the non-functional prototype Mark described, to help stakeholders see the end state. It runs alongside 1 and 2 and doesn't hold either up. Decisions on a production front end can follow once the pilot shows what users actually need.
+
+Unless I hear otherwise by Friday, I'll proceed on that basis. I'll also pick up my actions from the notes (Claude Enterprise access and sending the project files to Mark).
+
+Thanks,
+Ian
