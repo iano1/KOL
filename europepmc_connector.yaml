@@ -1,0 +1,137 @@
+swagger: '2.0'
+info:
+  title: Europe PMC Literature Search
+  description: >-
+    Searches Europe PMC, which includes all PubMed/MEDLINE records, and returns
+    articles with author lists and author affiliations. Use it to find
+    publications on a disease, drug or clinical trial, or by a named author.
+  version: '1.0'
+host: www.ebi.ac.uk
+basePath: /europepmc/webservices/rest
+schemes:
+  - https
+produces:
+  - application/json
+paths:
+  /search:
+    get:
+      operationId: SearchPublications
+      summary: Search publications
+      description: >-
+        Search Europe PMC with a query. Examples of query syntax:
+        "angelman syndrome" AND PUB_YEAR:[2019 TO 2026];
+        AUTH:"Lemke JR" AND "angelman";
+        "obudanersen" OR "ION582";
+        AFF:"Leipzig" AND "angelman". Use resultType=core to get author
+        affiliations. Results are paged: pass the returned nextCursorMark as
+        cursorMark to get the next page.
+      parameters:
+        - name: query
+          in: query
+          required: true
+          type: string
+          description: Europe PMC query string (supports AUTH, AFF, PUB_YEAR, TITLE, ABSTRACT fields and AND/OR/NOT).
+        - name: resultType
+          in: query
+          required: true
+          type: string
+          enum: [core, lite]
+          default: core
+          description: core returns full author lists with affiliations and abstracts; lite returns brief records.
+        - name: format
+          in: query
+          required: true
+          type: string
+          enum: [json]
+          default: json
+          x-ms-visibility: internal
+        - name: pageSize
+          in: query
+          required: false
+          type: integer
+          default: 25
+          minimum: 1
+          maximum: 1000
+          description: Number of results per page (1 to 1000).
+        - name: cursorMark
+          in: query
+          required: false
+          type: string
+          default: '*'
+          description: Paging cursor. Use * for the first page, then the nextCursorMark from the previous response.
+        - name: sort
+          in: query
+          required: false
+          type: string
+          description: Optional sort, e.g. "P_PDATE_D desc" for newest first.
+      responses:
+        '200':
+          description: Search results
+          schema:
+            type: object
+            properties:
+              hitCount:
+                type: integer
+                description: Total number of matching records.
+              nextCursorMark:
+                type: string
+                description: Cursor for the next page.
+              resultList:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        source:
+                          type: string
+                        pmid:
+                          type: string
+                          description: PubMed ID, if the record is in PubMed.
+                        doi:
+                          type: string
+                        title:
+                          type: string
+                        authorString:
+                          type: string
+                          description: All authors in order, as one string.
+                        journalTitle:
+                          type: string
+                        pubYear:
+                          type: string
+                        firstPublicationDate:
+                          type: string
+                        pubTypeList:
+                          type: object
+                        authorList:
+                          type: object
+                          description: Authors in order (first to last), each with affiliation details (resultType=core).
+                          properties:
+                            author:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  fullName:
+                                    type: string
+                                  firstName:
+                                    type: string
+                                  lastName:
+                                    type: string
+                                  initials:
+                                    type: string
+                                  authorAffiliationDetailsList:
+                                    type: object
+                                    properties:
+                                      authorAffiliation:
+                                        type: array
+                                        items:
+                                          type: object
+                                          properties:
+                                            affiliation:
+                                              type: string
+                        abstractText:
+                          type: string

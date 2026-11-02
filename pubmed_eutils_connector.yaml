@@ -1,0 +1,199 @@
+swagger: '2.0'
+info:
+  title: PubMed E-utilities
+  description: >-
+    NCBI's official programmatic access to PubMed. Use SearchPubMed to find
+    PubMed IDs (PMIDs) for a query, GetSummaries for titles, journals, dates
+    and author names, and FetchRecords for full records including author
+    affiliations (XML). NCBI allows 3 requests per second without an API key.
+  version: '1.0'
+host: eutils.ncbi.nlm.nih.gov
+basePath: /entrez/eutils
+schemes:
+  - https
+paths:
+  /esearch.fcgi:
+    get:
+      operationId: SearchPubMed
+      summary: Search PubMed for article IDs
+      description: >-
+        Returns PMIDs matching a PubMed query. Query examples:
+        "angelman syndrome"[mesh] AND 2019:2026[dp];
+        Lemke JR[au] AND angelman;
+        angelman AND Leipzig[ad];
+        NCT06914609[si].
+      produces:
+        - application/json
+      parameters:
+        - name: db
+          in: query
+          required: true
+          type: string
+          enum: [pubmed]
+          default: pubmed
+          x-ms-visibility: internal
+        - name: term
+          in: query
+          required: true
+          type: string
+          description: PubMed query (supports [mesh], [au], [ad] affiliation, [dp] date, [si] trial number tags).
+        - name: retmax
+          in: query
+          required: false
+          type: integer
+          default: 50
+          description: Maximum number of PMIDs to return (up to 10000).
+        - name: retstart
+          in: query
+          required: false
+          type: integer
+          default: 0
+          description: Index of the first PMID to return, for paging.
+        - name: sort
+          in: query
+          required: false
+          type: string
+          enum: [relevance, pub_date]
+          description: Sort order.
+        - name: retmode
+          in: query
+          required: true
+          type: string
+          enum: [json]
+          default: json
+          x-ms-visibility: internal
+        - name: tool
+          in: query
+          required: true
+          type: string
+          default: ma_kol_agent
+          x-ms-visibility: internal
+        - name: email
+          in: query
+          required: true
+          type: string
+          default: CHANGE_ME@example.com
+          x-ms-visibility: internal
+          description: Contact email NCBI asks for; replace with a real team address.
+      responses:
+        '200':
+          description: Matching PMIDs
+          schema:
+            type: object
+            properties:
+              esearchresult:
+                type: object
+                properties:
+                  count:
+                    type: string
+                    description: Total number of matches.
+                  retmax:
+                    type: string
+                  retstart:
+                    type: string
+                  idlist:
+                    type: array
+                    items:
+                      type: string
+                    description: PMIDs.
+  /esummary.fcgi:
+    get:
+      operationId: GetSummaries
+      summary: Get article summaries
+      description: >-
+        Returns title, journal, publication date and author names (in order)
+        for up to 200 PMIDs. Does not include affiliations; use FetchRecords
+        for those.
+      produces:
+        - application/json
+      parameters:
+        - name: db
+          in: query
+          required: true
+          type: string
+          enum: [pubmed]
+          default: pubmed
+          x-ms-visibility: internal
+        - name: id
+          in: query
+          required: true
+          type: string
+          description: Comma-separated PMIDs, e.g. 35150089,31729827.
+        - name: retmode
+          in: query
+          required: true
+          type: string
+          enum: [json]
+          default: json
+          x-ms-visibility: internal
+        - name: tool
+          in: query
+          required: true
+          type: string
+          default: ma_kol_agent
+          x-ms-visibility: internal
+        - name: email
+          in: query
+          required: true
+          type: string
+          default: CHANGE_ME@example.com
+          x-ms-visibility: internal
+      responses:
+        '200':
+          description: Summaries keyed by PMID under result
+          schema:
+            type: object
+  /efetch.fcgi:
+    get:
+      operationId: FetchRecords
+      summary: Fetch full PubMed records (with affiliations)
+      description: >-
+        Returns full PubMed records as XML for up to 200 PMIDs, including each
+        author's name, order and affiliation. Use this when author position or
+        affiliation is needed.
+      produces:
+        - text/xml
+      parameters:
+        - name: db
+          in: query
+          required: true
+          type: string
+          enum: [pubmed]
+          default: pubmed
+          x-ms-visibility: internal
+        - name: id
+          in: query
+          required: true
+          type: string
+          description: Comma-separated PMIDs.
+        - name: retmode
+          in: query
+          required: true
+          type: string
+          enum: [xml]
+          default: xml
+          x-ms-visibility: internal
+        - name: rettype
+          in: query
+          required: true
+          type: string
+          enum: [abstract]
+          default: abstract
+          x-ms-visibility: internal
+        - name: tool
+          in: query
+          required: true
+          type: string
+          default: ma_kol_agent
+          x-ms-visibility: internal
+        - name: email
+          in: query
+          required: true
+          type: string
+          default: CHANGE_ME@example.com
+          x-ms-visibility: internal
+      responses:
+        '200':
+          description: PubMed XML (PubmedArticleSet)
+          schema:
+            type: string
