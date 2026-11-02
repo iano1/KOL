@@ -1,0 +1,30 @@
+Adding a connector works, which means the policy hurdle is probably cleared. Here are the definitions to paste in. I'll write them in Swagger 2.0 (OpenAPI 2.0), the format Power Platform custom connectors expect.
+
+I've written two connector definitions and checked that both are valid Swagger 2.0, the format Power Platform custom connectors expect.
+
+- **europepmc_connector.yaml:** one action, *SearchPublications*. It returns articles with authors in order and each author's affiliation, in one call. Start with this one.
+- **pubmed_eutils_connector.yaml:** three actions:
+  - *SearchPubMed* finds PubMed IDs.
+  - *GetSummaries* gets titles, journals and author names.
+  - *FetchRecords* gets the full records with affiliations, as XML.
+
+**Before importing the PubMed file,** replace `CHANGE_ME@example.com` (it appears three times) with a team email address. NCBI asks callers to identify themselves.
+
+**To set up the test:**
+1. In Copilot Studio, create a test agent.
+2. Go to **Tools → Add a tool → New tool → Custom connector**. This opens Power Apps.
+3. Choose **New custom connector → Import an OpenAPI file**, and select europepmc_connector.yaml.
+4. Leave security as **No authentication** (both services are public), then **Create connector**.
+5. On the **Test** tab, create a connection and run *SearchPublications* with the query `AUTH:"Lemke JR" AND "angelman"` and resultType `core`. You should see real articles with affiliations.
+6. Back in Copilot Studio, add the connector to the agent as a tool.
+7. Ask the agent: *"Find Angelman syndrome papers by Johannes Lemke since 2019. For each, give the PMID, his author position and his affiliation."*
+8. Check the PMIDs and affiliations against PubMed in your browser.
+
+Then repeat with the PubMed file if you want both routes.
+
+**How to read the result:**
+- **Step 5 works:** the connector can reach the service from Microsoft's servers, which is the part Cowork couldn't do.
+- **Step 7 works:** the agent can use it for KOL evidence.
+- **Step 5 fails:** check the error. A "policy" or "blocked" message means the data-loss-prevention policy is stopping custom connectors, and an admin needs to allow it.
+
+Send me the result whichever way it goes.
