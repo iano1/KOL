@@ -1,0 +1,24 @@
+Ian, here are the results. Python couldn't reach any of the four APIs, because each web address failed to resolve. The fetch tool returned no page text, but the web search did return PubMed results.
+
+**Test A – Python (requests) API access**
+
+| Step | Endpoint | HTTP status | Result / exact error text | Mentions proxy / CONNECT / tunnel? |
+|---|---|---|---|---|
+| 1 | eutils esearch (PubMed) | None (no connection made) | `ConnectionError: HTTPSConnectionPool(host='eutils.ncbi.nlm.nih.gov', port=443): Max retries exceeded with url: /entrez/eutils/esearch.fcgi?db=pubmed&term=angelman+syndrome%5Bmesh%5D+AND+2024%5Bdp%5D&retmode=json&tool=connectivity_test&email=ipepper@uniphar.ie (Caused by NameResolutionError("HTTPSConnection(host='eutils.ncbi.nlm.nih.gov', port=443): Failed to resolve 'eutils.ncbi.nlm.nih.gov' ([Errno -3] Temporary failure in name resolution)"))` | No / No / No |
+| 2 | eutils efetch (PubMed) | Not run | Skipped because step 1 returned no PMID | n/a |
+| 3 | Europe PMC REST search | None (no connection made) | `ConnectionError: HTTPSConnectionPool(host='www.ebi.ac.uk', port=443): Max retries exceeded with url: /europepmc/webservices/rest/search?query=angelman&format=json&pageSize=3 (Caused by NameResolutionError("HTTPSConnection(host='www.ebi.ac.uk', port=443): Failed to resolve 'www.ebi.ac.uk' ([Errno -3] Temporary failure in name resolution)"))` | No / No / No |
+| 4 | ClinicalTrials.gov v2 studies | None (no connection made) | `ConnectionError: HTTPSConnectionPool(host='clinicaltrials.gov', port=443): Max retries exceeded with url: /api/v2/studies?query.term=angelman&pageSize=3 (Caused by NameResolutionError("HTTPSConnection(host='clinicaltrials.gov', port=443): Failed to resolve 'clinicaltrials.gov' ([Errno -3] Temporary failure in name resolution)"))` | No / No / No |
+
+No HTTP_PROXY or HTTPS_PROXY variable was set. The only proxy-related setting was `PLEX_STORAGE_PROXY_ENDPOINT=http://127.0.0.1:25253/storage-account-proxy`, which is for internal storage, not general web traffic.
+
+**Tests B and C – browsing tools**
+
+| Test | Target | Status | Outcome |
+|---|---|---|---|
+| B – page fetch | https://pubmed.ncbi.nlm.nih.gov/?term=angelman+syndrome | HTTP 200 from the fetch service, but no page content | Couldn't read the search results. Exact message:  [1](coworker-citation://1)"Web fetch retrieved nothing for that URL: Bing answered the fetch (HTTP 200) with no document for it and named no reason, so no page text was returned." It also said "Fetching the same URL again returns the same answer." Trace: 6ae87f4064064e7280ce3a61c4d935b5 |
+| C – web search | "Angelman syndrome Lemke Leipzig PubMed" | Succeeded (6 results) | **Yes, all 6 results came from pubmed.ncbi.nlm.nih.gov.** The URLs were /42771958/, /12566516/, /27615419/, /35150089/, /31729827/ and /20301323/. Only the first had readable text:  [2](coworker-citation://2)"Treatment responses to antiseizure medication in children with Angelman syndrome", listing Johannes R Lemke as an author. The other five showed only the site name. |
+
+**What this means:**
+- **Python:** these sites are blocked at name lookup, before any proxy or HTTPS connection is tried.
+- **Fetch tool:** it got a response but couldn't return the PubMed search page.
+- **Web search:** this is the only route that returned PubMed content.
