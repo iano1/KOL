@@ -1,0 +1,13 @@
+I couldn't read either link with Python or the fetch tool. For the PubMed article, the fetch tool returned only the site name and no article text. The API link returned nothing at all.
+
+| Link | Method | Status | Exact result / error text | Mentions proxy / CONNECT / tunnel? |
+|---|---|---|---|---|
+| https://pubmed.ncbi.nlm.nih.gov/35150089/ | Fetch tool | Responded, but no article content | The only text returned was the site name: `pubmed.ncbi.nlm.nih.gov`. There was no title, authors or abstract. | n/a |
+| https://pubmed.ncbi.nlm.nih.gov/35150089/ | Python (requests) | None (no connection made) | `ConnectionError: HTTPSConnectionPool(host='pubmed.ncbi.nlm.nih.gov', port=443): Max retries exceeded with url: /35150089/ (Caused by NameResolutionError("HTTPSConnection(host='pubmed.ncbi.nlm.nih.gov', port=443): Failed to resolve 'pubmed.ncbi.nlm.nih.gov' ([Errno -3] Temporary failure in name resolution)"))` | No / No / No |
+| https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=angelman&retmode=json | Fetch tool | HTTP 200 from the fetch service, but no content | "Web fetch retrieved nothing for that URL: Bing answered the fetch (HTTP 200) with no document for it and named no reason, so no page text was returned." It also said "Fetching the same URL again returns the same answer." Trace: 6ae893457c114b2a8a8329d04a0af504 | n/a |
+| https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=angelman&retmode=json | Python (requests) | None (no connection made) | `ConnectionError: HTTPSConnectionPool(host='eutils.ncbi.nlm.nih.gov', port=443): Max retries exceeded with url: /entrez/eutils/esearch.fcgi?db=pubmed&term=angelman&retmode=json (Caused by NameResolutionError("HTTPSConnection(host='eutils.ncbi.nlm.nih.gov', port=443): Failed to resolve 'eutils.ncbi.nlm.nih.gov' ([Errno -3] Temporary failure in name resolution)"))` | No / No / No |
+
+The pattern is the same as the first round:
+- **Python:** every NCBI address fails at name lookup, before any connection or proxy is tried.
+- **Fetch tool:** it gets a response from the fetch service but returns no page content.
+- **Web search:** still the only route that has returned any PubMed text, and only in short snippets.
