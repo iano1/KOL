@@ -1,0 +1,28 @@
+I'll use curl to query Europe PMC for publications by author Lemke JR related to Angelman syndrome, filtering for publication years 2019 through 2026.
+
+Using Python requests would just be circumventing the hook's restriction on network tools, so that's not a real workaround — I should use web_search instead.
+
+I found another relevant paper — "Precision Medicine in Angelman Syndrome," Neuropediatrics 2025, with Lemke as 5th author. Still need to track down its PMID, so I'll keep searching.
+
+I still need PMIDs for the Angelman Syndrome Online Registry 2021 paper in EJMG, with Lemke as last author, so I should search for those identifiers.
+
+I should check angelman.org for the PMID reference, and also look at other related papers like the adult DEE paper from Krey 2022 that mentions an Angelman case. Let me browse those two documents to verify.
+
+These pages are empty, so I should search for the PMID of the precision medicine paper and other related papers instead.
+
+I still need the PMID for the Precision Medicine paper, and I should check Lemke's affiliation in the registry paper. I'll spend one more search trying to find the precision medicine paper on Europe PMC.
+
+I didn't get Lemke's exact affiliation from the registry paper, so with my remaining search budget I'll try to confirm it via ScienceDirect.
+
+I've run out of search budget, so I'll compose the answer now. I wasn't able to run the Europe PMC API call directly and had to rely on web search instead, so my information may be incomplete — I couldn't confirm the exact affiliation listed on the paper itself, though the Leipzig trial registry page shows Lemke as contact at the Institute of Human Genetics, University of Leipzig Medical Center. I should be upfront about this uncertainty in my answer.
+
+I found 2 Angelman syndrome papers with Johannes R. Lemke as an author since 2019. This list may not be complete. The Europe PMC query your flow describes was blocked here (network tools like curl aren't allowed), so I searched the web instead. That found individual papers but couldn't give me the hitCount or the structured authorList data.
+
+PMID	Paper	Lemke's author position	Lemke's affiliation
+34619369 1	Krey I, …, Lemke JR. The Angelman Syndrome Online Registry – A multilingual approach to support global research. Eur J Med Genet. 2021;64(12):104349. DOI 10.1016/j.ejmg.2021.104349 1​2	Last author (10th of 10) and corresponding author 2	Not confirmed from the paper itself. The University of Southern Denmark listing links the paper to Leipzig University, but not to a specific author 2. The registry is run at the Institute of Human Genetics, University of Leipzig Medical Center, with Lemke as its contact 3. That is very likely his affiliation, but it is an inference.
+39168152 4	Manssen L, Krey I, …, Lemke JR, … Makowski C. Precision Medicine in Angelman Syndrome. Neuropediatrics. 2025;56(2):69–82 (online 2024). DOI 10.1055/a-2399-0191 5​4	5th of 8 (middle author) 6	(2) Institute of Human Genetics, University of Leipzig Medical Center, Leipzig, Germany; (5) Center for Rare Diseases, University of Leipzig Medical Center, Leipzig, Germany 6
+Not included:
+
+Krey I, Johannesen KM, Kohnen O, Lemke JR (Medizinische Genetik, 2022) is about genetic testing in adults with developmental and epileptic encephalopathy. It includes one Angelman case report (an 84-year-old woman), but Angelman syndrome isn't the paper's topic 7​8.
+I couldn't find a PMID for that 2022 paper.
+To get a complete, authoritative list with author positions and affiliations, the Europe PMC call would need to run somewhere with network access, with this query: AUTH:"Lemke JR" AND (TITLE_ABS:"Angelman" OR KW:"Angelman") AND PUB_YEAR:[2019 TO 2026]
