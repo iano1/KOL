@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Digital Allan - Uniphar Strategy System</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#080c14;overflow:hidden;}
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:rgba(200,210,230,0.1);border-radius:3px;}
+input::placeholder{color:#5a6478;}
+button{cursor:pointer;}
+button:focus{outline:none;}
+input:focus{outline:none;}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+var useState = React.useState;
+var useEffect = React.useEffect;
+var useRef = React.useRef;
+var useCallback = React.useCallback;
+
+var SYS = "You are Digital Allan - AI strategy assistant for Uniphar Group, modelled on Allan Keogh (Head of Strategy and IR). Direct, commercially minded, intellectually curious. References Helmer 7 Powers and Collins Good to Great. Pushes back on vagueness. UNIPHAR: Dublin HQ, IPO 2019. Rev ~2.9bn, EBITDA targeting 200m by 2028. 3500+ staff. CEO Ger Rabbette. DIVISIONS: Pharma (Dermot/Brian) 659m, 15.5% GP growth. MedTech (Brian) 268m, 10.5% GP. SC+R (Ian) 1.84bn, 4.2% GP. HEDGEHOG: Best at orchestrating end-to-end healthcare access. Engine: profit per patient journey. OKR RULES: Push for specificity. Challenge activity-based OKRs. Demand outcome-based KRs.";
+
+var T = {
+  h1: "#e8ecf2",
+  h2: "#c8d0dc",
+  body: "#a8b2c4",
+  muted: "#7d899e",
+  faint: "#5a6478",
+  bg: "#080c14",
+  card: "rgba(200,210,230,0.04)",
+  border: "rgba(200,210,230,0.08)",
+  borderHi: "rgba(200,210,230,0.14)"
+};
+
+var DIVS = [
+  { id:"pharma", name:"Pharma", full:"Uniphar Pharma", lead:"Dermot / Brian", rev:"\u20AC659m", gp:"15.5%", ebitda:"~\u20AC27m", margin:"18.6%", col:"#00bcd4", health:"on-track",
+    pillars:["Global Sourcing","Clinical Trials","Specialty Distribution","Product"],
+    powers:{scale:2,network:1,counter:3,switching:1,brand:1,cornered:3,process:4},
+    pb:{exec:1,ctx:1,star:1,pil:1,hz:1,cust:0,comp:0,cap:1,tech:0,okr:1,fin:1,risk:0,road:0},
+    hz:{h0:["Scale Global Sourcing volumes","Clinical trial supply ops"],h1:["Launch specialty distribution in new EU markets","Prove commercialisation model"],h2:["Build product portfolio","Establish US presence"],h3:["Full-service platform","Medicine repurposing"]},
+    okrs:[
+      {obj:"Become the go-to European commercialisation partner for small biotechs",krs:[{t:"Sign 3 new partnerships by Q4",d:1,o:3},{t:"Achieve \u20AC5m GP from partnerships",d:1.8,o:5},{t:"Launch in 2 new EU markets",d:0,o:2}],pillar:"Specialty Distrib",hz:"H1",st:"at-risk"},
+      {obj:"Build clinical trials into a standalone growth engine",krs:[{t:"Grow trial revenue to \u20AC25m",d:12.5,o:25},{t:"Win 5 new trial contracts",d:3,o:5},{t:"Reduce delivery time by 20%",d:8,o:20}],pillar:"Clinical Trials",hz:"H1",st:"on-track"}],
+    star:"Build the leading platform for specialist pharmaceutical services in Europe.",
+    g2g:{l5:"building",fw:"building",bf:"gap",hh:"strong",cd:"building",ta:"building",fl:"building"}},
+  { id:"medtech", name:"MedTech", full:"Uniphar MedTech", lead:"Brian", rev:"\u20AC268m", gp:"10.5%", ebitda:"~\u20AC43m", margin:"41.0%", col:"#ff9800", health:"on-track",
+    pillars:["Geographic Expansion","Specialty Deepening","Manufacturer Relationships","Tech Enablement"],
+    powers:{scale:3,network:1,counter:1,switching:2,brand:2,cornered:3,process:3},
+    pb:{exec:1,ctx:1,star:1,pil:1,hz:1,cust:1,comp:1,cap:0,tech:0,okr:1,fin:1,risk:1,road:0},
+    hz:{h0:["Deliver manufacturer commitments","Migrate to new ERP"],h1:["UK: expand from 2 to 8 specialties","Scale Germany and Nordics"],h2:["Enter 3 new EU markets","Digital ordering platform"],h3:["Evaluate division strategic value"]},
+    okrs:[
+      {obj:"Become leading independent MedTech distributor in Northern Europe",krs:[{t:"Grow UK GP by 15%",d:8,o:15},{t:"Add 4 new specialties",d:2,o:4},{t:"Onboard 10 new manufacturers",d:7,o:10}],pillar:"Geo Expansion",hz:"H1",st:"on-track"},
+      {obj:"Deepen wallet share with existing manufacturers",krs:[{t:"Avg revenue per manufacturer +12%",d:9,o:12},{t:"Surgical in 2 markets",d:1,o:2},{t:"90%+ manufacturer NPS",d:87,o:90}],pillar:"Relationships",hz:"H1",st:"on-track"}],
+    star:"Premier pan-European MedTech distribution partner through specialty deepening and geographic reach.",
+    g2g:{l5:"strong",fw:"building",bf:"building",hh:"building",cd:"strong",ta:"gap",fl:"building"}},
+  { id:"scr", name:"SC and Retail", full:"Supply Chain and Retail", lead:"Ian", rev:"\u20AC1.84bn", gp:"4.2%", ebitda:"~\u20AC53m", margin:"5.3%", col:"#66bb6a", health:"at-risk",
+    pillars:["Door Expansion","Tech (G2/PMR)","Pharmacy of the Future","Wholesale Efficiency"],
+    powers:{scale:5,network:2,counter:2,switching:3,brand:2,cornered:2,process:3},
+    pb:{exec:1,ctx:0,star:1,pil:1,hz:0,cust:0,comp:0,cap:0,tech:0,okr:1,fin:1,risk:0,road:0},
+    hz:{h0:["Complete Project Dawn","Maintain service levels"],h1:["Grow to 550 doors","Deploy G2 platform"],h2:["750+ doors","Pharmacy-of-future pilot"],h3:["1000 doors","Fully digital model"]},
+    okrs:[
+      {obj:"Accelerate pharmacy network growth with better unit economics",krs:[{t:"Add 70 net new doors in 2026",d:12,o:70},{t:"Improve avg pharmacy EBITDA by 8%",d:2,o:8},{t:"Reduce onboarding time by 30%",d:5,o:30}],pillar:"Door Expansion",hz:"H1",st:"behind"},
+      {obj:"Make G2 the competitive moat for Uniphar pharmacies",krs:[{t:"Deploy G2 to 200 pharmacies",d:18,o:200},{t:"80% pharmacist satisfaction",d:62,o:80},{t:"Reduce dispensing errors 25%",d:4,o:25}],pillar:"Tech Enablement",hz:"H1",st:"at-risk"}],
+    star:"Ireland's most advanced pharmacy network, reaching 1,000 doors with best-in-class unit economics.",
+    g2g:{l5:"building",fw:"gap",bf:"gap",hh:"gap",cd:"gap",ta:"gap",fl:"gap"}}
+];
+
+var PN={scale:"Scale Economies",network:"Network Effects",counter:"Counter-Position",switching:"Switching Costs",brand:"Branding",cornered:"Cornered Resource",process:"Process Power"};
+var PL=["","Weak","Emerging","Moderate","Strong","Dominant"];
+var PBK=[["exec","Exec Summary"],["ctx","Strategic Context"],["star","North Star"],["pil","Pillars"],["hz","Horizons"],["cust","Customer Insight"],["comp","Competitors"],["cap","Capability Map"],["tech","Tech Implications"],["okr","OKRs"],["fin","Financial Model"],["risk","Risk"],["road","Roadmap"]];
+var G2K=[["l5","Level 5 Leadership"],["fw","First Who Then What"],["bf","Brutal Facts"],["hh","Hedgehog"],["cd","Discipline"],["ta","Tech Accelerator"],["fl","Flywheel"]];
+var HC={"on-track":"#66bb6a","at-risk":"#ff9800","behind":"#e91e63"};
+var HL={"on-track":"On Track","at-risk":"At Risk","behind":"Behind"};
+var GC={"strong":"#66bb6a","building":"#ff9800","gap":"#e91e63"};
+var GL={"strong":"Strong","building":"Building","gap":"Gap"};
+
+async function askAI(m){try{var r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,system:SYS,messages:m})});var d=await r.json();return d.content && d.content.map(function(b){return b.text||""}).join("\n")||"Error.";}catch(e){return "Connection error.";}}
+
+function Radar({powers,sz}){
+  var s=sz||200,ks=Object.keys(PN),cx=s/2,cy=s/2,rad=s*0.32,st=(2*Math.PI)/ks.length;
+  var p=function(i,v){var a=st*i-Math.PI/2;return[cx+(v/5)*rad*Math.cos(a),cy+(v/5)*rad*Math.sin(a)];};
+  return(<svg viewBox={"0 0 "+s+" "+s} width={s} height={s}>
+    {[1,2,3,4,5].map(function(l){return <polygon key={l} points={ks.map(function(_,i){return p(i,l).join(",")}).join(" ")} fill="none" stroke="rgba(200,210,230,0.15)" strokeWidth="0.8"/>})}
+    {ks.map(function(_,i){return <line key={i} x1={cx} y1={cy} x2={p(i,5)[0]} y2={p(i,5)[1]} stroke="rgba(200,210,230,0.12)" strokeWidth="0.6"/>})}
+    <polygon points={ks.map(function(k,i){return p(i,powers[k]).join(",")}).join(" ")} fill="rgba(0,188,212,0.25)" stroke="#00e5ff" strokeWidth="2"/>
+    {ks.map(function(k,i){return <circle key={k} cx={p(i,powers[k])[0]} cy={p(i,powers[k])[1]} r="4" fill="#00e5ff"/>})}
+    {ks.map(function(k,i){var pt=p(i,6.2);return <text key={k} x={pt[0]} y={pt[1]} textAnchor="middle" dominantBaseline="middle" fill="#c8d0dc" fontSize="9" fontWeight="600">{PN[k].split(" ")[0]}</text>})}
+  </svg>);
+}
+
+function Dot({s}){return <span style={{display:"inline-flex",alignItems:"center",gap:5,fontSize:12,fontWeight:600,color:HC[s]}}><span style={{width:8,height:8,borderRadius:"50%",background:HC[s],display:"inline-block"}}/>{HL[s]}</span>;}
+
+function Bar({d,o,c}){var pct=Math.min(100,Math.round((d/o)*100));return(
+  <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:3}}>
+    <div style={{flex:1,height:5,background:T.border,borderRadius:3,overflow:"hidden"}}><div style={{height:"100%",width:pct+"%",background:c,borderRadius:3}}/></div>
+    <span style={{fontSize:11,color:T.muted,minWidth:32,textAlign:"right"}}>{pct}%</span>
+  </div>);}
+
+function ChatPanel({dv,onClose}){
+  var[msgs,setMsgs]=useState([]);var[inp,setInp]=useState("");var[busy,setBusy]=useState(false);var ref=useRef(null);
+  var dd=dv?DIVS.find(function(d){return d.id===dv}):null;
+  useEffect(function(){setMsgs([{role:"assistant",content:dd?"Working on "+dd.full+". I can stress-test OKRs, create new ones, check horizon alignment, map dependencies, or challenge the strategy. What is on your mind?":"Digital Allan here. I work at group level or any division. What shall we work on?"}]);},[dv]);
+  useEffect(function(){if(ref.current)ref.current.scrollTop=ref.current.scrollHeight;},[msgs]);
+  var send=useCallback(function(ov){
+    var t2=(ov||inp).trim();if(!t2||busy)return;setInp("");
+    var n=msgs.concat([{role:"user",content:t2}]);setMsgs(n);setBusy(true);
+    var a=n.map(function(m){return{role:m.role,content:m.content}});
+    if(dd)a[0]={role:"user",content:"["+dd.full+". Pillars: "+dd.pillars.join(", ")+". Rev: "+dd.rev+"]  "+a[0].content};
+    askAI(a).then(function(reply){setMsgs(function(prev){return prev.concat([{role:"assistant",content:reply}])});setBusy(false);});
+  },[inp,busy,msgs,dd]);
+  var qp=dd?["Stress-test the OKRs for "+dd.name,"What power should "+dd.name+" build?","What should "+dd.name+" stop doing?"]:["Where are divisions misaligned?","Which division has the weakest playbook?","Biggest strategic risk?"];
+  return(
+    <div style={{display:"flex",flexDirection:"column",height:"100%",background:"#080c14"}}>
+      <div style={{padding:"14px 16px",borderBottom:"1px solid "+T.border,display:"flex",justifyContent:"space-between",alignItems:"center",flexShrink:0}}>
+        <div style={{display:"flex",alignItems:"center",gap:10}}>
+          <div style={{width:32,height:32,borderRadius:"50%",background:"linear-gradient(135deg,#00bcd4,#006064)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,fontWeight:800,color:"#fff"}}>A</div>
+          <div><div style={{fontSize:14,fontWeight:700,color:T.h1}}>Digital Allan</div><div style={{fontSize:11,color:dd?dd.col:T.muted}}>{dd?dd.full:"Group Strategy"}</div></div>
+        </div>
+        <button onClick={onClose} style={{background:T.card,border:"none",borderRadius:6,width:30,height:30,color:T.muted,fontSize:16,cursor:"pointer"}}>X</button>
+      </div>
+      <div ref={ref} style={{flex:1,overflow:"auto",padding:14,display:"flex",flexDirection:"column",gap:10}}>
+        {msgs.map(function(m,i){return(<div key={i} style={{alignSelf:m.role==="user"?"flex-end":"flex-start",maxWidth:"88%",background:m.role==="user"?"rgba(0,188,212,0.12)":T.card,borderRadius:12,padding:"12px 16px",fontSize:14,lineHeight:1.7,color:T.h2,whiteSpace:"pre-wrap"}}>{m.content}</div>)})}
+        {busy&&<div style={{alignSelf:"flex-start",padding:"12px 16px",background:T.card,borderRadius:12,fontSize:14,color:T.muted}}>Allan is thinking...</div>}
+        {msgs.length===1&&!busy&&<div style={{display:"flex",flexDirection:"column",gap:6,marginTop:4}}>
+          {qp.map(function(q,i){return <button key={i} onClick={function(){send(q)}} style={{background:T.card,border:"1px solid "+T.border,borderRadius:8,padding:"10px 14px",color:T.body,fontSize:13,cursor:"pointer",textAlign:"left"}}>{q}</button>})}
+        </div>}
+      </div>
+      <div style={{padding:12,borderTop:"1px solid "+T.border,display:"flex",gap:8,flexShrink:0}}>
+        <input value={inp} onChange={function(e){setInp(e.target.value)}} onKeyDown={function(e){if(e.key==="Enter")send()}} placeholder="Ask about strategy, OKRs, powers..." style={{flex:1,background:T.card,border:"1px solid "+T.borderHi,borderRadius:8,padding:"11px 14px",color:T.h1,fontSize:14,outline:"none"}}/>
+        <button onClick={function(){send()}} style={{background:"linear-gradient(135deg,#00bcd4,#00838f)",border:"none",borderRadius:8,padding:"11px 20px",color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer",opacity:(!inp.trim()||busy)?0.4:1}}>Send</button>
+      </div>
+    </div>);
+}
+
+function App(){
+  var[view,setView]=useState("dashboard");
+  var[dv,setDv]=useState(null);
+  var[chat,setChat]=useState(false);
+  var dd=DIVS.find(function(d){return d.id===dv});
+
+  var views=[{id:"dashboard",label:"Dashboard"},{id:"okrs",label:"OKRs"},{id:"powers",label:"7 Powers"},{id:"playbook",label:"Playbook"},{id:"pulse",label:"Pulse"},{id:"g2g",label:"G2G"}];
+
+  var bx=function(p){return{background:T.card,border:"1px solid "+T.border,borderRadius:12,padding:p||18}};
+  var hd=function(c){return{fontSize:12,fontWeight:700,color:c||T.muted,letterSpacing:"0.06em",textTransform:"uppercase",marginBottom:14}};
+
+  return(
+    <div style={{display:"flex",height:"100vh",background:T.bg,fontFamily:"system-ui,sans-serif",color:T.h1,overflow:"hidden"}}>
+
+      <div style={{width:72,background:"#0a0e18",borderRight:"1px solid "+T.border,display:"flex",flexDirection:"column",alignItems:"center",paddingTop:14,flexShrink:0,gap:2}}>
+        <div style={{width:38,height:38,borderRadius:10,background:"linear-gradient(135deg,#00bcd4,#006064)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:17,fontWeight:800,marginBottom:18,color:"#fff"}}>U</div>
+        {views.map(function(v){return(
+          <button key={v.id} onClick={function(){setView(v.id)}} style={{width:56,height:44,borderRadius:8,border:"none",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",background:view===v.id?"rgba(0,188,212,0.12)":"transparent",color:view===v.id?"#00bcd4":T.muted,fontSize:11,fontWeight:600}}>{v.label}</button>
+        )})}
+        <div style={{flex:1}}/>
+        <button onClick={function(){setChat(!chat)}} style={{width:48,height:48,borderRadius:"50%",border:"none",cursor:"pointer",marginBottom:14,background:chat?"#00838f":"linear-gradient(135deg,#00bcd4,#00838f)",color:"#fff",fontSize:19,fontWeight:800,boxShadow:chat?"none":"0 2px 20px rgba(0,188,212,0.5)",display:"flex",alignItems:"center",justifyContent:"center"}}>{chat?"X":"A"}</button>
+      </div>
+
+      <div style={{flex:1,overflow:"auto",display:"flex",flexDirection:"column"}}>
+        <div style={{padding:"10px 28px",borderBottom:"1px solid "+T.border,display:"flex",alignItems:"center",justifyContent:"space-between",flexShrink:0}}>
+          <div style={{display:"flex",alignItems:"center",gap:4}}>
+            <button onClick={function(){setDv(null)}} style={{padding:"7px 16px",borderRadius:7,border:"none",cursor:"pointer",fontSize:13,fontWeight:!dv?700:500,background:!dv?"rgba(0,188,212,0.12)":"transparent",color:!dv?"#00bcd4":T.muted}}>Group</button>
+            {DIVS.map(function(d){return(
+              <button key={d.id} onClick={function(){setDv(d.id)}} style={{padding:"7px 16px",borderRadius:7,border:"none",cursor:"pointer",fontSize:13,fontWeight:dv===d.id?700:500,background:dv===d.id?d.col+"15":"transparent",color:dv===d.id?d.col:T.muted,display:"flex",alignItems:"center",gap:6}}>
+                {d.name}<span style={{width:7,height:7,borderRadius:"50%",background:HC[d.health]}}/>
+              </button>)})}
+          </div>
+          {!chat&&<button onClick={function(){setChat(true)}} style={{display:"flex",alignItems:"center",gap:8,padding:"8px 18px",borderRadius:9,border:"1px solid rgba(0,188,212,0.3)",background:"rgba(0,188,212,0.08)",color:"#00bcd4",fontSize:13,fontWeight:700,cursor:"pointer",boxShadow:"0 0 20px rgba(0,188,212,0.1)"}}>
+            <span style={{width:22,height:22,borderRadius:"50%",background:"linear-gradient(135deg,#00bcd4,#00838f)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:800,color:"#fff"}}>A</span>Ask Allan
+          </button>}
+        </div>
+
+        <div style={{flex:1,overflow:"auto",padding:"24px 28px"}}>
+
+          {view==="dashboard"&&!dv&&<div>
+            <h1 style={{fontSize:26,fontWeight:800,marginBottom:20,color:T.h1}}>Strategy Dashboard</h1>
+            <div style={{background:"linear-gradient(135deg,rgba(0,188,212,0.08),rgba(0,188,212,0.02))",border:"1px solid rgba(0,188,212,0.15)",borderRadius:14,padding:"20px 24px",marginBottom:20,display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:14}}>
+              <div>
+                <div style={hd("rgba(0,188,212,0.7)")}>Group EBITDA Target</div>
+                <div style={{fontSize:36,fontWeight:800,color:"#00bcd4",marginTop:-6}}>{"\u20AC"}200m</div>
+                <div style={{fontSize:13,color:T.body}}>by 2028 - 80%+ organic - currently {"\u20AC"}134m</div>
+              </div>
+              <div style={{display:"flex",gap:24}}>
+                {[{l:"Revenue",v:"\u20AC2.9bn"},{l:"GP Growth",v:"8.9%"},{l:"EPS Growth",v:"21%"},{l:"Staff",v:"3,500+"}].map(function(k,i){return <div key={i} style={{textAlign:"center"}}><div style={{fontSize:20,fontWeight:700,color:T.h1}}>{k.v}</div><div style={{fontSize:11,color:T.muted,marginTop:3,textTransform:"uppercase"}}>{k.l}</div></div>})}
+              </div>
+            </div>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:14,marginBottom:22}}>
+              {DIVS.map(function(d){var pc=Object.values(d.pb).reduce(function(a,b){return a+b},0);var pt=Object.keys(d.pb).length;return(
+                <div key={d.id} onClick={function(){setDv(d.id)}} style={{background:T.card,border:"1px solid "+T.border,borderRadius:12,padding:18,cursor:"pointer",position:"relative",overflow:"hidden"}}>
+                  <div style={{position:"absolute",top:0,left:0,right:0,height:3,background:d.col,opacity:0.7}}/>
+                  <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}><div style={{fontSize:16,fontWeight:700,color:T.h1}}>{d.name}</div><Dot s={d.health}/></div>
+                  <div style={{fontSize:12,color:T.muted,marginBottom:10}}>{d.lead}</div>
+                  <div style={{display:"flex",gap:18,marginBottom:12}}>
+                    {[{l:"Rev",v:d.rev},{l:"EBITDA",v:d.ebitda},{l:"Margin",v:d.margin}].map(function(k,i){return <div key={i}><div style={{fontSize:11,color:T.muted,textTransform:"uppercase"}}>{k.l}</div><div style={{fontSize:18,fontWeight:700,color:T.h2}}>{k.v}</div></div>})}
+                  </div>
+                  <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
+                    <span style={{fontSize:11,color:T.muted}}>Playbook</span>
+                    <div style={{flex:1,height:5,background:T.border,borderRadius:3,overflow:"hidden"}}><div style={{height:"100%",width:Math.round(pc/pt*100)+"%",background:d.col,borderRadius:3}}/></div>
+                    <span style={{fontSize:11,color:d.col,fontWeight:700}}>{pc}/{pt}</span>
+                  </div>
+                  <div style={{display:"flex",gap:5,flexWrap:"wrap"}}>{d.pillars.map(function(p,i){return <span key={i} style={{fontSize:11,padding:"3px 9px",borderRadius:10,background:d.col+"12",color:d.col}}>{p}</span>})}</div>
+                </div>)})}
+            </div>
+            <div style={bx(22)}>
+              <div style={hd("#e91e63")}>Hedgehog Concept</div>
+              <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:14}}>
+                {[{c:"Best in World At",t:"Orchestrating end-to-end healthcare access - turning operational complexity into scalable infrastructure",cl:"#e91e63"},{c:"Economic Engine",t:"Profit per patient journey managed. Value per active healthcare relationship.",cl:"#ff9800"},{c:"Deep Passion",t:"Making hard medicines, hard pathways, and hard systems actually work for patients",cl:"#00bcd4"}].map(function(h,i){return(
+                  <div key={i} style={{padding:"16px 18px",background:h.cl+"08",borderRadius:10,borderLeft:"3px solid "+h.cl+"50"}}>
+                    <div style={{fontSize:11,fontWeight:700,color:h.cl,marginBottom:8,textTransform:"uppercase"}}>{h.c}</div>
+                    <div style={{fontSize:14,color:T.body,lineHeight:1.7}}>{h.t}</div>
+                  </div>)})}
+              </div>
+            </div>
+          </div>}
+
+          {view==="dashboard"&&dv&&dd&&<div>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:20,flexWrap:"wrap",gap:12}}>
+              <div><h1 style={{fontSize:26,fontWeight:800,color:dd.col}}>{dd.name}</h1><p style={{fontSize:14,color:T.body,marginTop:4}}>{dd.lead} - <Dot s={dd.health}/></p></div>
+              <div style={{display:"flex",gap:18}}>{[{l:"Revenue",v:dd.rev},{l:"GP",v:dd.gp},{l:"EBITDA",v:dd.ebitda},{l:"Margin",v:dd.margin}].map(function(k,i){return <div key={i} style={{textAlign:"center"}}><div style={{fontSize:18,fontWeight:700,color:dd.col}}>{k.v}</div><div style={{fontSize:11,color:T.muted,textTransform:"uppercase"}}>{k.l}</div></div>})}</div>
+            </div>
+            <div style={{background:dd.col+"0a",border:"1px solid "+dd.col+"25",borderRadius:12,padding:"15px 20px",marginBottom:16}}>
+              <div style={{fontSize:11,fontWeight:700,color:dd.col,textTransform:"uppercase",marginBottom:5}}>North Star</div>
+              <div style={{fontSize:15,color:T.h2,lineHeight:1.7}}>{dd.star}</div>
+            </div>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:14,marginBottom:16}}>
+              <div style={bx(18)}><div style={hd()}>Pillars</div>{dd.pillars.map(function(p,i){return <div key={i} style={{padding:"10px 14px",marginBottom:5,background:dd.col+"08",borderRadius:8,borderLeft:"3px solid "+dd.col+"50",fontSize:14,color:T.h2}}>{p}</div>})}</div>
+              <div style={{background:T.card,border:"1px solid "+T.border,borderRadius:12,padding:18,display:"flex",flexDirection:"column",alignItems:"center"}}><div style={{fontSize:12,fontWeight:700,color:T.muted,textTransform:"uppercase",marginBottom:10,alignSelf:"flex-start"}}>7 Powers</div><Radar powers={dd.powers} sz={220}/></div>
+            </div>
+            <div style={{background:T.card,border:"1px solid "+T.border,borderRadius:12,padding:18,marginBottom:16}}><div style={hd()}>Horizons</div>
+              <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:10}}>
+                {[{k:"h0",l:"H0 Run",c:"#66bb6a"},{k:"h1",l:"H1 Execute",c:"#00bcd4"},{k:"h2",l:"H2 Expand",c:"#ff9800"},{k:"h3",l:"H3 Transform",c:"#e91e63"}].map(function(h){return(
+                  <div key={h.k} style={{background:h.c+"08",borderRadius:8,padding:13,borderTop:"3px solid "+h.c}}>
+                    <div style={{fontSize:12,fontWeight:700,color:h.c,marginBottom:10}}>{h.l}</div>
+                    {(dd.hz[h.k]||[]).map(function(it,i){return <div key={i} style={{fontSize:13,color:T.body,marginBottom:6,paddingLeft:10,borderLeft:"2px solid "+h.c+"40",lineHeight:1.6}}>{it}</div>})}
+                  </div>)})}
+              </div>
+            </div>
+            <div style={bx(18)}><div style={hd()}>OKRs</div>
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:14}}>
+                {dd.okrs.map(function(o,i){return <div key={i} style={{background:T.bg,borderRadius:10,padding:16,borderLeft:"3px solid "+dd.col}}>
+                  <div style={{display:"flex",gap:6,marginBottom:8,alignItems:"center"}}>
+                    <span style={{fontSize:11,background:dd.col+"18",color:dd.col,padding:"3px 10px",borderRadius:10,fontWeight:700}}>{o.hz}</span>
+                    <span style={{fontSize:11,background:T.card,color:T.muted,padding:"3px 10px",borderRadius:10}}>{o.pillar}</span>
+                    <span style={{marginLeft:"auto"}}><Dot s={o.st}/></span>
+                  </div>
+                  <div style={{fontSize:15,fontWeight:600,color:T.h1,marginBottom:12,lineHeight:1.5}}>{o.obj}</div>
+                  {o.krs.map(function(kr,j){return <div key={j} style={{marginBottom:8}}>
+                    <div style={{fontSize:13,color:T.body,marginBottom:3,display:"flex",gap:8}}><span style={{color:dd.col,fontSize:11,fontWeight:700,marginTop:1,flexShrink:0}}>KR{j+1}</span><span style={{lineHeight:1.5}}>{kr.t}</span></div>
+                    <Bar d={kr.d} o={kr.o} c={dd.col}/>
+                  </div>})}
+                </div>})}
+              </div>
+            </div>
+          </div>}
+
+          {view==="okrs"&&<div>
+            <h1 style={{fontSize:26,fontWeight:800,marginBottom:20}}>OKRs</h1>
+            {(dv?[dd]:DIVS).map(function(d){return <div key={d.id} style={{marginBottom:24}}>
+              <div style={{fontSize:15,fontWeight:700,color:d.col,marginBottom:12}}>{d.full}</div>
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:14}}>
+                {d.okrs.map(function(o,i){return <div key={i} style={{background:T.card,border:"1px solid "+T.border,borderRadius:12,padding:16,borderLeft:"3px solid "+d.col}}>
+                  <div style={{display:"flex",gap:6,marginBottom:8,alignItems:"center"}}>
+                    <span style={{fontSize:11,background:d.col+"18",color:d.col,padding:"3px 10px",borderRadius:10,fontWeight:700}}>{o.hz}</span>
+                    <span style={{fontSize:11,background:T.card,color:T.muted,padding:"3px 10px",borderRadius:10}}>{o.pillar}</span>
+                    <span style={{marginLeft:"auto"}}><Dot s={o.st}/></span>
+                  </div>
+                  <div style={{fontSize:15,fontWeight:600,color:T.h1,marginBottom:12,lineHeight:1.5}}>{o.obj}</div>
+                  {o.krs.map(function(kr,j){return <div key={j} style={{marginBottom:8}}>
+                    <div style={{fontSize:13,color:T.body,marginBottom:3}}><span style={{color:d.col,fontSize:11,fontWeight:700,marginRight:8}}>KR{j+1}</span>{kr.t}</div>
+                    <Bar d={kr.d} o={kr.o} c={d.col}/>
+                  </div>})}
+                </div>})}
+              </div>
+            </div>})}
+          </div>}
+
+          {view==="powers"&&<div>
+            <h1 style={{fontSize:26,fontWeight:800,marginBottom:20}}>7 Powers</h1>
+            <div style={{background:T.card,border:"1px solid "+T.border,borderRadius:12,overflow:"hidden",marginBottom:20}}>
+              <table style={{width:"100%",borderCollapse:"collapse"}}><thead><tr style={{borderBottom:"1px solid "+T.borderHi}}>
+                <th style={{textAlign:"left",padding:"14px 18px",fontSize:12,fontWeight:700,color:T.muted,textTransform:"uppercase"}}>Power</th>
+                {DIVS.map(function(d){return <th key={d.id} style={{textAlign:"center",padding:"14px 10px",fontSize:13,fontWeight:700,color:d.col}}>{d.name}</th>})}
+              </tr></thead><tbody>{Object.keys(PN).map(function(pk){return(
+                <tr key={pk} style={{borderBottom:"1px solid "+T.border}}>
+                  <td style={{padding:"12px 18px",fontSize:14,color:T.body}}>{PN[pk]}</td>
+                  {DIVS.map(function(d){var v=d.powers[pk];var c=v>=4?"#66bb6a":v>=3?"#ff9800":v>=2?"#ffeb3b":"#e91e63";return(
+                    <td key={d.id} style={{textAlign:"center",padding:"12px 10px"}}><div style={{display:"inline-flex",alignItems:"center",gap:8}}>
+                      <div style={{display:"flex",gap:3}}>{[1,2,3,4,5].map(function(i){return <div key={i} style={{width:10,height:10,borderRadius:2,background:i<=v?c:T.border}}/>})}</div>
+                      <span style={{fontSize:11,color:T.muted}}>{PL[v]}</span>
+                    </div></td>)})}
+                </tr>)})}</tbody></table>
+            </div>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:14}}>
+              {DIVS.map(function(d){return <div key={d.id} style={{background:T.card,border:"1px solid "+T.border,borderRadius:12,padding:18,textAlign:"center"}}><div style={{fontSize:14,fontWeight:700,color:d.col,marginBottom:6}}>{d.name}</div><Radar powers={d.powers} sz={210}/></div>})}
+            </div>
+          </div>}
+
+          {view==="playbook"&&<div>
+            <h1 style={{fontSize:26,fontWeight:800,marginBottom:8}}>Playbook Tracker</h1>
+            <p style={{fontSize:14,color:T.body,marginBottom:20}}>Strategy playbook completeness by division</p>
+            <div style={{background:T.card,border:"1px solid "+T.border,borderRadius:12,overflow:"hidden"}}>
+              <table style={{width:"100%",borderCollapse:"collapse"}}><thead><tr style={{borderBottom:"1px solid "+T.borderHi}}>
+                <th style={{textAlign:"left",padding:"14px 18px",fontSize:12,fontWeight:700,color:T.muted,textTransform:"uppercase"}}>Section</th>
+                {DIVS.map(function(d){var c=Object.values(d.pb).reduce(function(a,b){return a+b},0);return <th key={d.id} style={{textAlign:"center",padding:"14px 10px",fontSize:13,fontWeight:700,color:d.col}}>{d.name} ({c}/13)</th>})}
+              </tr></thead><tbody>{PBK.map(function(pk){return(
+                <tr key={pk[0]} style={{borderBottom:"1px solid "+T.border}}>
+                  <td style={{padding:"12px 18px",fontSize:14,color:T.body}}>{pk[1]}</td>
+                  {DIVS.map(function(d){var ok=d.pb[pk[0]];return(
+                    <td key={d.id} style={{textAlign:"center",padding:"12px 10px"}}>
+                      <span style={{display:"inline-block",width:24,height:24,borderRadius:6,background:ok?d.col+"22":T.border,border:"1px solid "+(ok?d.col+"50":T.border),color:ok?d.col:T.faint,fontSize:13,lineHeight:"24px",fontWeight:700,textAlign:"center"}}>{ok?"Y":"-"}</span>
+                    </td>)})}
+                </tr>)})}</tbody></table>
+            </div>
+          </div>}
+
+          {view==="pulse"&&<div>
+            <h1 style={{fontSize:26,fontWeight:800,marginBottom:4}}>Pulse</h1>
+            <p style={{fontSize:14,color:T.body,marginBottom:28}}>Uniphar StratOps - discipline first, then execution at scale</p>
+
+            {/* Top row: 5 pillars with arrows */}
+            <div style={{display:"flex",alignItems:"stretch",gap:0,marginBottom:0}}>
+              {[
+                {n:"Sensing",num:"1",c:"#42a5f5",sub:"Scan + Learn",items:["Market shifts","Customer pain","Competitor moves","Performance vs plan","Technology signals"]},
+                {n:"Strategy",num:"2",c:"#00bcd4",sub:"Choose + Align",items:["North Stars","Where to play","How to win","Investment themes","Capability choices"]},
+                {n:"Product",num:"3",c:"#ff9800",sub:"H0 / H1",items:["Core products","Revenue optimisation","Customer experience","Incremental adjacencies","Funds the future"]},
+                {n:"Innovation",num:"4",c:"#e91e63",sub:"H2 / H3",items:["New business models","New ventures","Disruptive bets","Emerging opportunities","Seeds tomorrow"]},
+                {n:"Execution",num:"5",c:"#ab47bc",sub:"Deliver + Govern",items:["Delivery discipline","Portfolio management","Governance + QBRs","Change management","Adoption + scale"]}
+              ].map(function(s,i){return(
+                <div key={i} style={{display:"flex",alignItems:"stretch"}}>
+                  <div style={{background:s.c+"0a",border:"1px solid "+s.c+"20",borderRadius:12,padding:"20px 16px",width:160,display:"flex",flexDirection:"column"}}>
+                    <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
+                      <div style={{width:28,height:28,borderRadius:"50%",background:s.c+"18",display:"flex",alignItems:"center",justifyContent:"center",fontSize:13,fontWeight:800,color:s.c,flexShrink:0}}>{s.num}</div>
+                      <div style={{fontSize:15,fontWeight:700,color:s.c}}>{s.n}</div>
+                    </div>
+                    <div style={{fontSize:11,fontWeight:600,color:s.c,background:s.c+"10",borderRadius:6,padding:"3px 10px",display:"inline-block",alignSelf:"flex-start",marginBottom:12}}>{s.sub}</div>
+                    <div style={{flex:1}}>
+                      {s.items.map(function(item,j){return(
+                        <div key={j} style={{fontSize:12,color:T.body,marginBottom:5,paddingLeft:10,borderLeft:"2px solid "+s.c+"30",lineHeight:1.5}}>{item}</div>
+                      )})}
+                    </div>
+                  </div>
+                  {i<4&&<div style={{display:"flex",alignItems:"center",padding:"0 6px"}}>
+                    <svg width="20" height="20" viewBox="0 0 20 20"><path d="M4 10 L14 10 M10 6 L15 10 L10 14" fill="none" stroke="#5a6478" strokeWidth="1.5"/></svg>
+                  </div>}
+                </div>
+              )})}
+            </div>
+
+            {/* Feedback arrow: Execution back to Sensing */}
+            <div style={{display:"flex",alignItems:"center",justifyContent:"center",padding:"10px 0"}}>
+              <svg width="100%" height="24" viewBox="0 0 860 24" style={{maxWidth:860}}>
+                <path d="M 808 4 C 820 12, 820 20, 808 20 L 52 20 C 40 20, 40 12, 52 4" fill="none" stroke="#42a5f530" strokeWidth="1.5" strokeDasharray="6 4"/>
+                <path d="M 56 8 L 48 4 L 56 0" fill="none" stroke="#42a5f540" strokeWidth="1.5"/>
+                <text x="430" y="18" textAnchor="middle" fill="#5a6478" fontSize="10">Measure outcomes, learn, adapt</text>
+              </svg>
+            </div>
+
+            {/* Tech + Data foundation bar */}
+            <div style={{background:"#66bb6a08",border:"1px solid #66bb6a20",borderRadius:12,padding:"16px 24px",display:"flex",alignItems:"center",gap:20,marginBottom:28}}>
+              <div style={{display:"flex",alignItems:"center",gap:10,flexShrink:0}}>
+                <div style={{width:32,height:32,borderRadius:"50%",background:"#66bb6a18",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,fontWeight:800,color:"#66bb6a"}}>T</div>
+                <div>
+                  <div style={{fontSize:15,fontWeight:700,color:"#66bb6a"}}>Tech + Data</div>
+                  <div style={{fontSize:11,color:T.muted}}>Foundation layer - enables all pillars</div>
+                </div>
+              </div>
+              <div style={{flex:1,display:"flex",gap:12,justifyContent:"center",flexWrap:"wrap"}}>
+                {["Platforms","AI","Architecture","Data foundations","Automation"].map(function(t,i){return(
+                  <span key={i} style={{fontSize:12,color:"#66bb6a",background:"#66bb6a10",border:"1px solid #66bb6a20",borderRadius:8,padding:"5px 14px"}}>{t}</span>
+                )})}
+              </div>
+            </div>
+
+            {/* Honest truth callout */}
+            <div style={{background:T.card,border:"1px solid "+T.border,borderRadius:12,padding:"16px 20px"}}>
+              <div style={{fontSize:14,color:T.h2,lineHeight:1.8}}>Most companies start with tech or innovation workshops. Winners start with sensing and strategy, then allocate resources across product and innovation. Product funds the future. Innovation seeds it. Tech enables both. Execution closes the gap.</div>
+            </div>
+
+          </div>}
+
+          {view==="g2g"&&<div>
+            <h1 style={{fontSize:26,fontWeight:800,marginBottom:8}}>Good to Great</h1>
+            <p style={{fontSize:14,color:T.body,marginBottom:20}}>Collins principles - divisional maturity</p>
+            <div style={{background:T.card,border:"1px solid "+T.border,borderRadius:12,overflow:"hidden"}}>
+              <table style={{width:"100%",borderCollapse:"collapse"}}><thead><tr style={{borderBottom:"1px solid "+T.borderHi}}>
+                <th style={{textAlign:"left",padding:"14px 18px",fontSize:12,fontWeight:700,color:T.muted,textTransform:"uppercase"}}>Principle</th>
+                {DIVS.map(function(d){return <th key={d.id} style={{textAlign:"center",padding:"14px 10px",fontSize:13,fontWeight:700,color:d.col}}>{d.name}</th>})}
+              </tr></thead><tbody>{G2K.map(function(gk){return(
+                <tr key={gk[0]} style={{borderBottom:"1px solid "+T.border}}>
+                  <td style={{padding:"12px 18px",fontSize:14,color:T.body}}>{gk[1]}</td>
+                  {DIVS.map(function(d){var v=d.g2g[gk[0]];return(
+                    <td key={d.id} style={{textAlign:"center",padding:"12px 10px"}}>
+                      <span style={{fontSize:11,padding:"4px 12px",borderRadius:10,background:GC[v]+"18",color:GC[v],fontWeight:700}}>{GL[v]}</span>
+                    </td>)})}
+                </tr>)})}</tbody></table>
+            </div>
+          </div>}
+
+        </div>
+      </div>
+
+      {chat&&<div style={{width:420,borderLeft:"1px solid "+T.border,flexShrink:0,background:T.bg}}><ChatPanel dv={dv} onClose={function(){setChat(false)}}/></div>}
+    </div>
+  );
+}
+
+var root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(React.createElement(App));
+</script>
+</body>
+</html>
